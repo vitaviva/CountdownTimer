@@ -1,17 +1,51 @@
+/*
+ * Copyright 2021 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.example.androiddevchallenge.ui
 
-import android.util.Log
-import androidx.compose.animation.core.*
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.animateIntAsState
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cancel
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -32,7 +66,6 @@ import com.example.androiddevchallenge.ui.theme.purple200
 import com.example.androiddevchallenge.ui.theme.teal200
 import com.example.androiddevchallenge.ui.theme.typography
 
-
 @Composable
 fun DisplayScreen(
     timeInSec: Int,
@@ -51,7 +84,6 @@ fun DisplayScreen(
         onDispose { }
     }
 
-    Log.e("wangp", "$elapsed")
     val (hou, min, sec) = remember(elapsed / 1000) {
         val elapsedInSec = elapsed / 1000
         val hou = elapsedInSec / 3600
@@ -117,7 +149,6 @@ fun DisplayScreen(
                         labelSize = labelSize,
                         textAlign = if (onlySec) TextAlign.Center else TextAlign.End
                     )
-
                 }
 
                 Spacer(modifier = Modifier.height(20.dp))
@@ -130,15 +161,12 @@ fun DisplayScreen(
                     style = typography.subtitle1,
                     color = MaterialTheme.colors.primary,
                 )
-
             }
-
 
             AnimationCircleCanvas(
                 Modifier.align(Alignment.Center),
                 durationMills = timeInSec * 1000
             )
-
         }
 
         Spacer(modifier = Modifier.size(40.dp))
@@ -153,11 +181,8 @@ fun DisplayScreen(
             contentDescription = null,
             colorFilter = ColorFilter.tint(MaterialTheme.colors.primary)
         )
-
     }
-
 }
-
 
 @Composable
 fun CountdownText(modifier: Modifier, value: Int) {
@@ -167,7 +192,6 @@ fun CountdownText(modifier: Modifier, value: Int) {
         modifier = modifier,
     )
 }
-
 
 @Composable
 private fun AnimationCircleCanvas(modifier: Modifier, durationMills: Int) {
@@ -196,7 +220,6 @@ private fun AnimationCircleCanvas(modifier: Modifier, durationMills: Int) {
         targetValue = 0.95f,
         animationSpec = infiniteRepeatable(tween(2000), RepeatMode.Reverse)
     )
-
 
     DisposableEffect(Unit) {
         trigger = 360f
@@ -228,7 +251,6 @@ private fun AnimationCircleCanvas(modifier: Modifier, durationMills: Int) {
                 useCenter = false,
                 style = strokeRestart,
             )
-
         }
 
         drawCircle(
@@ -259,4 +281,3 @@ private fun AnimationCircleCanvas(modifier: Modifier, durationMills: Int) {
 fun DisplayPreview() {
     DisplayScreen(1000) {}
 }
-

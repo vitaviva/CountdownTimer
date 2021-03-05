@@ -21,12 +21,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.Crossfade
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.androiddevchallenge.ui.DisplayScreen
 import com.example.androiddevchallenge.ui.SettingScreen2
 import com.example.androiddevchallenge.ui.theme.MyTheme
-
 
 enum class Screen {
     Setting, Display
