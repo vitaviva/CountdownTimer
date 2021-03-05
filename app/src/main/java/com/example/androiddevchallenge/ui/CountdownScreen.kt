@@ -3,76 +3,155 @@ package com.example.androiddevchallenge.ui
 import android.util.Log
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import java.util.concurrent.TimeUnit
+import androidx.compose.ui.unit.sp
+import com.example.androiddevchallenge.ui.theme.purple200
+import com.example.androiddevchallenge.ui.theme.teal200
+import com.example.androiddevchallenge.ui.theme.typography
 
 
 @Composable
 fun DisplayScreen(
-    sumTime: Long,
+    timeInSec: Int,
     onCancel: () -> Unit
 ) {
 
-    var trigger by remember { mutableStateOf(sumTime) }
+    var trigger by remember { mutableStateOf(timeInSec) }
+
     val elapsed by animateIntAsState(
-        targetValue = trigger.toInt(),
-        animationSpec = tween(sumTime.toInt(), easing = LinearEasing)
+        targetValue = trigger * 1000,
+        animationSpec = tween(timeInSec * 1000, easing = LinearEasing)
     )
 
-    Log.e("wangp", trigger.toString())
     DisposableEffect(Unit) {
         trigger = 0
         onDispose { }
     }
 
-    val (minutes, seconds, mills) = remember(elapsed) {
-        val min = (elapsed / 1000 / 60).coerceAtLeast(0)
-        val sec = (elapsed / 1000 % 60).coerceAtLeast(0)
-        val mills = (elapsed % 1000)
-        Triple(min, sec, mills)
+    Log.e("wangp", "$elapsed")
+    val (hou, min, sec) = remember(elapsed / 1000) {
+        val elapsedInSec = elapsed / 1000
+        val hou = elapsedInSec / 3600
+        val min = elapsedInSec / 60 - hou * 60
+        val sec = elapsedInSec % 60
+        Triple(hou, min, sec)
     }
 
+    val mills = remember(elapsed) {
+        elapsed % 1000
+    }
 
-    Box() {
-        Spacer(modifier = Modifier.size(30.dp))
-        Column() {
-            Row(Modifier.padding(start = 100.dp, end = 100.dp)) {
-                CountdownText(modifier = Modifier.weight(1f), minutes)
-                Text(":")
-                CountdownText(modifier = Modifier.weight(1f), seconds)
-                Text(":")
-                CountdownText(modifier = Modifier.weight(1f), mills)
+    Column(
+        Modifier
+            .fillMaxHeight()
+            .padding(start = 10.dp, end = 10.dp)
+    ) {
+
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(30.dp),
+            text = "Timer",
+            textAlign = TextAlign.Center,
+            fontWeight = FontWeight.Bold
+        )
+
+        Box {
+
+            val (size, labelSize) = when {
+                hou > 0 -> 40.sp to 20.sp
+                min > 0 -> 80.sp to 30.sp
+                else -> 150.sp to 50.sp
+            }
+
+            Column(Modifier.align(Alignment.Center)) {
+                Row(
+                    Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(start = 55.dp, end = 55.dp, top = 10.dp, bottom = 10.dp)
+                ) {
+                    if (hou > 0) {
+                        DisplayTime(
+                            String.format("%02d", hou),
+                            "h",
+                            fontSize = size,
+                            labelSize = labelSize
+                        )
+                    }
+                    if (min > 0) {
+                        DisplayTime(
+                            String.format("%02d", min),
+                            "m",
+                            fontSize = size,
+                            labelSize = labelSize
+                        )
+                    }
+                    val onlySec = size > 100.sp
+                    DisplayTime(
+                        if (onlySec) sec.toString() else String.format("%02d", sec),
+                        if (onlySec) "" else "s",
+                        fontSize = size,
+                        labelSize = labelSize,
+                        textAlign = if (onlySec) TextAlign.Center else TextAlign.End
+                    )
+
+                }
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                Text(
+                    ".${String.format("%02d", mills / 10)}",
+                    Modifier.align(Alignment.CenterHorizontally),
+                    fontSize = 30.sp,
+                    fontFamily = FontFamily.Cursive,
+                    style = typography.subtitle1,
+                    color = MaterialTheme.colors.primary,
+                )
 
             }
 
-            Spacer(modifier = Modifier.height(30.dp))
 
-            CancelButton(onCancel)
+            AnimationCircleCanvas(
+                Modifier.align(Alignment.Center),
+                durationMills = timeInSec * 1000
+            )
+
         }
 
-        Spacer(modifier = Modifier.size(10.dp))
+        Spacer(modifier = Modifier.size(40.dp))
 
-        AnimationCircleCanvas(
-            Modifier.align(Alignment.Center),
-            sum = sumTime
+        Image(
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .size(70.dp)
+                .shadow(30.dp, shape = CircleShape)
+                .clickable { onCancel() },
+            imageVector = Icons.Default.Cancel,
+            contentDescription = null,
+            colorFilter = ColorFilter.tint(MaterialTheme.colors.primary)
         )
 
     }
@@ -91,45 +170,15 @@ fun CountdownText(modifier: Modifier, value: Int) {
 
 
 @Composable
-private fun CancelButton(onCancel: () -> Unit) {
-    Row(
-        Modifier
-            .fillMaxWidth()
-            .padding(start = 100.dp, end = 100.dp)
-    ) {
-        Button(
-            modifier = Modifier.weight(1f),
-            onClick = onCancel,
-        ) {
-            Text(text = "Cancel")
-        }
-    }
-
-}
-
-@Composable
-private fun AnimationCircleCanvas(modifier: Modifier, sum: Long) {
+private fun AnimationCircleCanvas(modifier: Modifier, durationMills: Int) {
     val transition = rememberInfiniteTransition()
+    var trigger by remember { mutableStateOf(0f) }
     var isFinished by remember { mutableStateOf(false) }
 
-
-    val animatedFloat by transition.animateFloat(
-        initialValue = 0f,
-        targetValue = 360f,
-        animationSpec = infiniteRepeatable(tween(1000), RepeatMode.Restart)
-    )
-    val animatedScale by transition.animateFloat(
-        initialValue = 1f,
-        targetValue = 0.95f,
-        animationSpec = infiniteRepeatable(tween(2000), RepeatMode.Reverse)
-    )
-
-    var trigger by remember { mutableStateOf(0f) }
-
-    val animate2 by animateFloatAsState(
+    val animateTween by animateFloatAsState(
         targetValue = trigger,
         animationSpec = tween(
-            durationMillis = sum.toInt(),
+            durationMillis = durationMills,
             easing = LinearEasing
         ),
         finishedListener = {
@@ -137,54 +186,66 @@ private fun AnimationCircleCanvas(modifier: Modifier, sum: Long) {
         }
     )
 
+    val animatedRestart by transition.animateFloat(
+        initialValue = 0f,
+        targetValue = 360f,
+        animationSpec = infiniteRepeatable(tween(1000), RepeatMode.Restart)
+    )
+    val animatedReverse by transition.animateFloat(
+        initialValue = 1.05f,
+        targetValue = 0.95f,
+        animationSpec = infiniteRepeatable(tween(2000), RepeatMode.Reverse)
+    )
+
+
     DisposableEffect(Unit) {
         trigger = 360f
         onDispose {}
     }
 
-    val stroke = Stroke(8f)
+    val strokeRestart = Stroke(15f)
+    val strokeReverse = Stroke(10f)
     val color = MaterialTheme.colors.primary
     val secondColor = MaterialTheme.colors.secondary
     Canvas(
         modifier = modifier
             .padding(16.dp)
-            .size(400.dp)
+            .size(350.dp)
     ) {
         val diameter = size.minDimension
         val radius = diameter / 2f
-        val insideRadius = radius - stroke.width
         val topLeftOffset = Offset(10f, 10f)
-        val size = Size(insideRadius * 2, insideRadius * 2)
-        val rotationAngle = animatedFloat
+        val size = Size(radius * 2, radius * 2)
 
         if (!isFinished) {
 
-            drawCircle(
-                color = secondColor,
-                style = stroke,
-                radius = radius * animatedScale
-            )
-
             drawArc(
                 color = color,
-                startAngle = rotationAngle,
+                startAngle = animatedRestart,
                 sweepAngle = 150f,
                 topLeft = topLeftOffset,
                 size = size,
                 useCenter = false,
-                style = stroke,
+                style = strokeRestart,
             )
 
         }
 
+        drawCircle(
+            color = secondColor,
+            style = strokeReverse,
+            radius = radius * if (isFinished) 1f else animatedReverse
+        )
+
         drawArc(
             startAngle = 270f,
-            sweepAngle = animate2,
+            sweepAngle = animateTween,
             brush = Brush.radialGradient(
+                radius = radius,
                 colors = listOf(
-                    Color.Yellow.copy(0.5f),
-                    Color.Red.copy(0.5f),
-                    Color.Blue.copy(0.5f)
+                    purple200.copy(0.3f),
+                    teal200.copy(0.2f),
+                    Color.White.copy(0.3f)
                 ),
             ),
             useCenter = true,
@@ -196,27 +257,6 @@ private fun AnimationCircleCanvas(modifier: Modifier, sum: Long) {
 @Preview
 @Composable
 fun DisplayPreview() {
-    DisplayScreen(0) {}
-}
-
-private fun interval(sumTime: Long, timeInMillis: Long, timeUnit: TimeUnit): Flow<Long> = flow {
-
-    val delayTime = when (timeUnit) {
-        TimeUnit.MICROSECONDS -> timeInMillis / 1000
-        TimeUnit.NANOSECONDS -> timeInMillis / 1_000_000
-        TimeUnit.SECONDS -> timeInMillis * 1000
-        TimeUnit.MINUTES -> 60 * timeInMillis * 1000
-        TimeUnit.HOURS -> 60 * 60 * timeInMillis * 1000
-        TimeUnit.DAYS -> 24 * 60 * 60 * timeInMillis * 1000
-        else -> timeInMillis
-    }
-
-    var sum = sumTime
-    while (sum > 0) {
-        delay(delayTime)
-        sum -= delayTime
-        emit(sum)
-    }
-
+    DisplayScreen(1000) {}
 }
 

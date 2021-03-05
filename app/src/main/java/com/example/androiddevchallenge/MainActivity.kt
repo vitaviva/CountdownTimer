@@ -24,7 +24,7 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.androiddevchallenge.ui.DisplayScreen
-import com.example.androiddevchallenge.ui.SettingScreen
+import com.example.androiddevchallenge.ui.SettingScreen2
 import com.example.androiddevchallenge.ui.theme.MyTheme
 
 
@@ -58,15 +58,15 @@ fun MyApp() {
 
     Surface(color = MaterialTheme.colors.background) {
         var screen by remember { mutableStateOf(Screen.Setting) }
-        var sumTime by remember { mutableStateOf(0L) }
+        var timeInSec by remember { mutableStateOf(0) }
 
         Crossfade(targetState = screen) {
             when (screen) {
-                Screen.Setting -> SettingScreen {
+                Screen.Setting -> SettingScreen2 {
                     screen = Screen.Display
-                    sumTime = it
+                    timeInSec = it
                 }
-                Screen.Display -> DisplayScreen(sumTime) {
+                Screen.Display -> DisplayScreen(timeInSec) {
                     screen = Screen.Setting
                 }
             }
