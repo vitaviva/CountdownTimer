@@ -27,12 +27,12 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -84,18 +84,6 @@ fun DisplayScreen(
         onDispose { }
     }
 
-    val (hou, min, sec) = remember(elapsed / 1000) {
-        val elapsedInSec = elapsed / 1000
-        val hou = elapsedInSec / 3600
-        val min = elapsedInSec / 60 - hou * 60
-        val sec = elapsedInSec % 60
-        Triple(hou, min, sec)
-    }
-
-    val mills = remember(elapsed) {
-        elapsed % 1000
-    }
-
     Column(
         Modifier
             .fillMaxHeight()
@@ -112,64 +100,11 @@ fun DisplayScreen(
         )
 
         Box {
-
-            val (size, labelSize) = when {
-                hou > 0 -> 40.sp to 20.sp
-                min > 0 -> 80.sp to 30.sp
-                else -> 150.sp to 50.sp
-            }
-
-            Column(Modifier.align(Alignment.Center)) {
-                Row(
-                    Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .padding(start = 55.dp, end = 55.dp, top = 10.dp, bottom = 10.dp)
-                ) {
-                    if (hou > 0) {
-                        DisplayTime(
-                            String.format("%02d", hou),
-                            "h",
-                            fontSize = size,
-                            labelSize = labelSize
-                        )
-                    }
-                    if (min > 0) {
-                        DisplayTime(
-                            String.format("%02d", min),
-                            "m",
-                            fontSize = size,
-                            labelSize = labelSize
-                        )
-                    }
-                    val onlySec = size > 100.sp
-                    DisplayTime(
-                        if (onlySec) sec.toString() else String.format("%02d", sec),
-                        if (onlySec) "" else "s",
-                        fontSize = size,
-                        labelSize = labelSize,
-                        textAlign = if (onlySec) TextAlign.Center else TextAlign.End
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(20.dp))
-
-                Text(
-                    ".${String.format("%02d", mills / 10)}",
-                    Modifier.align(Alignment.CenterHorizontally),
-                    fontSize = 30.sp,
-                    fontFamily = FontFamily.Cursive,
-                    style = typography.subtitle1,
-                    color = MaterialTheme.colors.primary,
-                )
-            }
-
-            AnimationCircleCanvas(
-                Modifier.align(Alignment.Center),
-                durationMills = timeInSec * 1000
-            )
+            AnimationElapsedTime(elapsed)
+            AnimationCircleCanvas(elapsed)
         }
 
-        Spacer(modifier = Modifier.size(40.dp))
+        Spacer(modifier = Modifier.size(55.dp))
 
         Image(
             modifier = Modifier
@@ -184,17 +119,86 @@ fun DisplayScreen(
     }
 }
 
-@Composable
-fun CountdownText(modifier: Modifier, value: Int) {
-    Text(
-        value.toString(),
-        textAlign = TextAlign.Center,
-        modifier = modifier,
-    )
-}
 
 @Composable
-private fun AnimationCircleCanvas(modifier: Modifier, durationMills: Int) {
+private fun BoxScope.AnimationElapsedTime(elapsed: Int) {
+
+    val (hou, min, sec) = remember(elapsed / 1000) {
+        val elapsedInSec = elapsed / 1000
+        val hou = elapsedInSec / 3600
+        val min = elapsedInSec / 60 - hou * 60
+        val sec = elapsedInSec % 60
+        Triple(hou, min, sec)
+    }
+
+    val mills = remember(elapsed) {
+        elapsed % 1000
+    }
+
+    val onlySec = remember(hou, min) {
+        hou == 0 && min == 0
+    }
+
+    val transition = rememberInfiniteTransition()
+
+    val animatedFont by transition.animateFloat(
+        initialValue = 1.5f,
+        targetValue = 0.8f,
+        animationSpec = infiniteRepeatable(tween(500), RepeatMode.Reverse)
+    )
+
+    val (size, labelSize) = when {
+        hou > 0 -> 40.sp to 20.sp
+        min > 0 -> 80.sp to 30.sp
+        else -> 150.sp to 50.sp
+    }
+
+    Row(
+        Modifier
+            .align(Alignment.Center)
+            .padding(start = 55.dp, end = 55.dp, top = 10.dp, bottom = 10.dp)
+    ) {
+        if (hou > 0) {
+            DisplayTime(
+                hou.formatTime(),
+                "h",
+                fontSize = size,
+                labelSize = labelSize
+            )
+        }
+        if (min > 0) {
+            DisplayTime(
+                min.formatTime(),
+                "m",
+                fontSize = size,
+                labelSize = labelSize
+            )
+        }
+        DisplayTime(
+            if (onlySec) sec.toString() else sec.formatTime(),
+            if (onlySec) "" else "s",
+            fontSize = size * (if (onlySec && sec < 10 && mills != 0) animatedFont else 1f),
+            labelSize = labelSize,
+            textAlign = if (onlySec) TextAlign.Center else TextAlign.End
+        )
+    }
+
+    Text(
+        ".${(mills / 10).formatTime()}",
+        Modifier
+            .align(Alignment.BottomCenter)
+            .padding(bottom = 80.dp),
+        fontSize = 30.sp,
+        fontFamily = FontFamily.Cursive,
+        style = typography.subtitle1,
+        color = MaterialTheme.colors.primary,
+    )
+
+}
+
+
+@Composable
+private fun BoxScope.AnimationCircleCanvas(durationMills: Int) {
     val transition = rememberInfiniteTransition()
     var trigger by remember { mutableStateOf(0f) }
     var isFinished by remember { mutableStateOf(false) }
@@ -231,7 +235,8 @@ private fun AnimationCircleCanvas(modifier: Modifier, durationMills: Int) {
     val color = MaterialTheme.colors.primary
     val secondColor = MaterialTheme.colors.secondary
     Canvas(
-        modifier = modifier
+        modifier = Modifier
+            .align(Alignment.Center)
             .padding(16.dp)
             .size(350.dp)
     ) {
@@ -281,3 +286,6 @@ private fun AnimationCircleCanvas(modifier: Modifier, durationMills: Int) {
 fun DisplayPreview() {
     DisplayScreen(1000) {}
 }
+
+
+private fun Int.formatTime() = String.format("%02d", this)

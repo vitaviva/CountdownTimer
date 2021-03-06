@@ -1,4 +1,4 @@
-# Put title of your app here
+# TikTik: A Beautiful Countdown Timer
 
 <!--- Replace <OWNER> with your Github Username and <REPOSITORY> with the name of your repository. -->
 <!--- You can find both of these in the url bar when you open your repository in github. -->
@@ -6,11 +6,12 @@
 ![](https://img.shields.io/badge/jetpack_compose-1.0.0_beta01-green.svg)
 
 ## :scroll: Description
-<img src="app/src/main/res/mipmap-xxhdpi/count_down_timer.png" width=120 align=right>
+<img src="app/src/main/res/mipmap-xxhdpi/count_down_timer.png" width=60 align=left >
 
-A countdown-timer app built with jetpack_compose for [Android Dev Challenge: Week 2 - Countdown timer](https://android-developers.googleblog.com/2021/03/android-dev-challenge-2.html)
+TikTik is a beautiful countdown-timer app built in Jetpack Compose, <br/> which is also submmited to [Android Dev Challenge: Week 2 - Countdown timer](https://android-developers.googleblog.com/2021/03/android-dev-challenge-2.html)
 
-<img src="/results/screenrecord.gif" width="260">
+
+<img src="/results/screenrecord.gif" width="260" >
 
 ## :bulb: Motivation and Context
 <!--- Optionally point readers to interesting parts of your submission. -->
