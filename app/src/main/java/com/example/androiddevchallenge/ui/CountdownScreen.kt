@@ -67,7 +67,7 @@ import com.example.androiddevchallenge.ui.theme.teal200
 import com.example.androiddevchallenge.ui.theme.typography
 
 @Composable
-fun DisplayScreen(
+fun CountdownScreen(
     timeInSec: Int,
     onCancel: () -> Unit
 ) {
@@ -281,7 +281,7 @@ private fun BoxScope.AnimationCircleCanvas(durationMills: Int) {
 @Preview
 @Composable
 fun DisplayPreview() {
-    DisplayScreen(1000) {}
+    CountdownScreen(1000) {}
 }
 
 private fun Int.formatTime() = String.format("%02d", this)

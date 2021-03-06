@@ -55,7 +55,7 @@ import com.example.androiddevchallenge.ui.theme.MyTheme
 import com.example.androiddevchallenge.ui.theme.typography
 
 @Composable
-fun SettingScreen2(onStart: (it: Int) -> Unit) {
+fun InputScreen2(onStart: (it: Int) -> Unit) {
 
     var input by remember {
         mutableStateOf(listOf<Int>())
@@ -111,7 +111,7 @@ fun SettingScreen2(onStart: (it: Int) -> Unit) {
                 imageVector = Icons.Default.Backspace,
                 contentDescription = null,
                 colorFilter = ColorFilter.tint(
-                    Color.Unspecified.copy(0.5f).copy(
+                    Color.Unspecified.copy(
                         if (hasCountdownValue) 1.0f else 0.5f
                     )
                 )
@@ -237,9 +237,9 @@ fun RowScope.InputButton(num: Int, onClick: (Int) -> Unit) {
 
 @Preview
 @Composable
-fun Setting2Preview() {
+fun Input2Preview() {
     MyTheme(darkTheme = true) {
-        SettingScreen2 {}
+        InputScreen2 {}
     }
 }
 

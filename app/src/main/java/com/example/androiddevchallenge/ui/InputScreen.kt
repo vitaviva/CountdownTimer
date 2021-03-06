@@ -44,7 +44,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -53,10 +52,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-@Deprecated("")
+@Deprecated("", ReplaceWith("InputScreen2", "com.example.androiddevchallenge.ui"))
 @Composable
-fun SettingScreen(onStart: (it: Long) -> Unit) {
-    val context = LocalContext.current
+fun InputScreen(onStart: (it: Long) -> Unit) {
 
     var minutes by remember { mutableStateOf(0) }
     var seconds by remember { mutableStateOf(0) }
@@ -184,6 +182,6 @@ fun TimeInputField(
 
 @Preview
 @Composable
-fun SettingPreview() {
-    SettingScreen {}
+fun InputPreview() {
+    InputScreen {}
 }

@@ -27,12 +27,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.androiddevchallenge.ui.DisplayScreen
-import com.example.androiddevchallenge.ui.SettingScreen2
+import com.example.androiddevchallenge.ui.CountdownScreen
+import com.example.androiddevchallenge.ui.InputScreen2
 import com.example.androiddevchallenge.ui.theme.MyTheme
 
 enum class Screen {
-    Setting, Display
+    Input, Countdown
 }
 
 class MainActivity : AppCompatActivity() {
@@ -47,30 +47,22 @@ class MainActivity : AppCompatActivity() {
     }
 }
 
-fun Long.toTime(): Pair<Int, Int> {
-    return (this / 60).toInt() to (this % 60).toInt()
-}
-
-fun Pair<Int, Int>.toNum(): Int {
-    return first * 60 + second
-}
-
 // Start building your app here!
 @Composable
 fun MyApp() {
 
+    var timeInSec = 0
+
     Surface(color = MaterialTheme.colors.background) {
-        var screen by remember { mutableStateOf(Screen.Setting) }
-        var timeInSec by remember { mutableStateOf(0) }
+        var screen by remember { mutableStateOf(Screen.Input) }
 
         Crossfade(targetState = screen) {
             when (screen) {
-                Screen.Setting -> SettingScreen2 {
-                    screen = Screen.Display
-                    timeInSec = it
+                Screen.Input -> InputScreen2 {
+                    screen = Screen.Countdown
                 }
-                Screen.Display -> DisplayScreen(timeInSec) {
-                    screen = Screen.Setting
+                Screen.Countdown -> CountdownScreen(timeInSec) {
+                    screen = Screen.Input
                 }
             }
         }

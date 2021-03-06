@@ -6,7 +6,7 @@
 ![](https://img.shields.io/badge/jetpack_compose-1.0.0_beta01-green.svg)
 
 ## :scroll: Description
-<img src="app/src/main/res/mipmap-xxhdpi/count_down_timer.png" width=60 align=left >
+<img src="app/src/main/res/mipmap-xxhdpi/count_down_timer.png" width=45 align=left >
 
 TikTik is a beautiful countdown-timer app built in Jetpack Compose, <br/> which is also submmited to [Android Dev Challenge: Week 2 - Countdown timer](https://android-developers.googleblog.com/2021/03/android-dev-challenge-2.html)
 
