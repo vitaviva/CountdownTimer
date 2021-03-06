@@ -119,7 +119,6 @@ fun DisplayScreen(
     }
 }
 
-
 @Composable
 private fun BoxScope.AnimationElapsedTime(elapsed: Int) {
 
@@ -193,9 +192,7 @@ private fun BoxScope.AnimationElapsedTime(elapsed: Int) {
         style = typography.subtitle1,
         color = MaterialTheme.colors.primary,
     )
-
 }
-
 
 @Composable
 private fun BoxScope.AnimationCircleCanvas(durationMills: Int) {
@@ -286,6 +283,5 @@ private fun BoxScope.AnimationCircleCanvas(durationMills: Int) {
 fun DisplayPreview() {
     DisplayScreen(1000) {}
 }
-
 
 private fun Int.formatTime() = String.format("%02d", this)
