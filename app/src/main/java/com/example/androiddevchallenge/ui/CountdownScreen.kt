@@ -291,7 +291,6 @@ fun DisplayPreview() {
 
 private fun Int.formatTime() = String.format("%02d", this)
 
-
 private data class HMSFontInfo(val fontSize: TextUnit, val labelSize: TextUnit, val padding: Dp) {
     companion object {
         val HMS = HMSFontInfo(50.sp, 20.sp, 40.dp)
@@ -299,4 +298,3 @@ private data class HMSFontInfo(val fontSize: TextUnit, val labelSize: TextUnit, 
         val S = HMSFontInfo(150.sp, 50.sp, 55.dp)
     }
 }
-

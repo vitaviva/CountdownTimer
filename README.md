@@ -18,8 +18,10 @@ TikTik is a beautiful countdown-timer app built in Jetpack Compose, <br/> which 
 <!--- What are you especially proud of? -->
 
 - UI is fully built in Jetpack Compose
-- Beautiful animations when time's count down
-- Convenient to set time with a numeric soft-keyboard, which managed  by compose-state
+- Beautiful countdown animation
+- Convenient to input time by a numeric soft-keyboard
+- Font size is changes according to the remaining time
+<img src="/results/screenshot_3.png" width=400 >
 
 
 ## :camera_flash: Screenshots
