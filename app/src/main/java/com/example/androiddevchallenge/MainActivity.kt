@@ -59,6 +59,7 @@ fun MyApp() {
         Crossfade(targetState = screen) {
             when (screen) {
                 Screen.Input -> InputScreen2 {
+                    timeInSec = it
                     screen = Screen.Countdown
                 }
                 Screen.Countdown -> CountdownScreen(timeInSec) {

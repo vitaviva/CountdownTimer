@@ -60,8 +60,13 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.androiddevchallenge.ui.HMSFontInfo.Companion.HMS
+import com.example.androiddevchallenge.ui.HMSFontInfo.Companion.MS
+import com.example.androiddevchallenge.ui.HMSFontInfo.Companion.S
 import com.example.androiddevchallenge.ui.theme.purple200
 import com.example.androiddevchallenge.ui.theme.teal200
 import com.example.androiddevchallenge.ui.theme.typography
@@ -146,16 +151,16 @@ private fun BoxScope.AnimationElapsedTime(elapsed: Int) {
         animationSpec = infiniteRepeatable(tween(500), RepeatMode.Reverse)
     )
 
-    val (size, labelSize) = when {
-        hou > 0 -> 40.sp to 20.sp
-        min > 0 -> 80.sp to 30.sp
-        else -> 150.sp to 50.sp
+    val (size, labelSize, padding) = when {
+        hou > 0 -> HMS
+        min > 0 -> MS
+        else -> S
     }
 
     Row(
         Modifier
             .align(Alignment.Center)
-            .padding(start = 55.dp, end = 55.dp, top = 10.dp, bottom = 10.dp)
+            .padding(start = padding, end = padding, top = 10.dp, bottom = 10.dp)
     ) {
         if (hou > 0) {
             DisplayTime(
@@ -285,3 +290,13 @@ fun DisplayPreview() {
 }
 
 private fun Int.formatTime() = String.format("%02d", this)
+
+
+private data class HMSFontInfo(val fontSize: TextUnit, val labelSize: TextUnit, val padding: Dp) {
+    companion object {
+        val HMS = HMSFontInfo(50.sp, 20.sp, 40.dp)
+        val MS = HMSFontInfo(85.sp, 30.sp, 50.dp)
+        val S = HMSFontInfo(150.sp, 50.sp, 55.dp)
+    }
+}
+
