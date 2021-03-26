@@ -56,6 +56,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -64,6 +65,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.androiddevchallenge.R
 import com.example.androiddevchallenge.ui.HMSFontInfo.Companion.HMS
 import com.example.androiddevchallenge.ui.HMSFontInfo.Companion.MS
 import com.example.androiddevchallenge.ui.HMSFontInfo.Companion.S
@@ -99,7 +101,7 @@ fun CountdownScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(30.dp),
-            text = "Timer",
+            text = stringResource(id = R.string.app_name),
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.Bold
         )
